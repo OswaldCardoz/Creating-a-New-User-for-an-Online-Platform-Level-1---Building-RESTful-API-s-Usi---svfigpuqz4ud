@@ -23,9 +23,14 @@ app.post("/api/v1/details", (req, res) => {
     });
   }
 
-  // Generating a new user ID by incrementing the ID of the last user in the array
-  const lastUserId = userDetails.length ? userDetails[userDetails.length - 1].id : 0;
-  const newUserId = lastUserId + 1;
+  // Finding the first available gap in the IDs
+  let newUserId = 1;
+  for (const user of userDetails) {
+    if (user.id !== newUserId) {
+      break;
+    }
+    newUserId++;
+  }
 
   // Creating a new user object
   const newUser = {
