@@ -11,6 +11,45 @@ const userDetails = JSON.parse(
 app.use(express.json());
 
 // Write POST endpoint for registering new user
+app.post("/api/v1/details", (req, res) => {
+  // Extracting user details from request body
+  const { name, mail, number } = req.body;
+
+  // Validating user data
+  if (!name || !mail || !number) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Invalid user data. Please provide name, mail, and number.",
+    });
+  }
+
+  // Generating a new user ID by incrementing the ID of the last user in the array
+  const lastUserId = userDetails.length ? userDetails[userDetails.length - 1].id : 0;
+  const newUserId = lastUserId + 1;
+
+  // Creating a new user object
+  const newUser = {
+    id: newUserId,
+    name,
+    mail,
+    number,
+  };
+
+  // Adding the new user to the userDetails array
+  userDetails.push(newUser);
+
+  // Writing the updated userDetails array to the JSON file
+  fs.writeFileSync(`${__dirname}/data/userDetails.json`, JSON.stringify(userDetails, null, 2));
+
+  // Responding with a success message and the newly created user details
+  res.status(201).json({
+    status: "Success",
+    message: "User registered successfully",
+    data: {
+      newUser,
+    },
+  });
+});
 
 // GET endpoint for sending the details of users
 app.get("/api/v1/details", (req, res) => {
