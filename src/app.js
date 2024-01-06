@@ -51,7 +51,7 @@ app.post("/api/v1/details", (req, res) => {
     status: "Success",
     message: "User registered successfully",
     data: {
-      newUser,
+      newProduct: newUser,
     },
   });
 });
